@@ -6,19 +6,19 @@
 #include <vector>
 #include <SFML/System.hpp>
 
-#include "Game.h"
+#include "CGame.h"
 
-Game::Game(unsigned int width, unsigned int height, string title, unsigned int frameLimit)
+CGame::CGame(unsigned int width, unsigned int height, string title, unsigned int frameLimit)
 {
 	window = make_unique<RenderWindow>(VideoMode(width, height), title);
 	window->setFramerateLimit(frameLimit);
-	map = Map::Map("maps/level_1.txt");
+	map = CMap::CMap("maps/level_1.txt");
 	
-	camera = Camera::Camera(&clock, window->getSize().x, window->getSize().y, map);
+	camera = CCamera::CCamera(&clock, window->getSize().x, window->getSize().y, map);
 }
 
 
-void Game::draw()
+void CGame::draw()
 {
 	window->clear(Color(84, 84, 84));
 	
@@ -27,21 +27,21 @@ void Game::draw()
 	window->display();
 }
 
-void Game::update()
+void CGame::update()
 {
-	if (Keyboard::isKeyPressed(Keyboard::A) || Keyboard::isKeyPressed(Keyboard::D))
+	/*if (Keyboard::isKeyPressed(Keyboard::A) || Keyboard::isKeyPressed(Keyboard::D))
 	{
 		if (Keyboard::isKeyPressed(Keyboard::A))
 			player.rotate(-1 * clock.getElapsedTime().asSeconds());
 		if (Keyboard::isKeyPressed(Keyboard::D))
 			player.rotate(1 * clock.getElapsedTime().asSeconds());
 
-	}
+	}*/
 	clock.restart();
 	draw();
 }
 
-void Game::loop()
+void CGame::loop()
 {
 	while (window->isOpen())
 	{
@@ -55,7 +55,7 @@ void Game::loop()
 
 }
 
-void Game::destroy()
+void CGame::destroy()
 {
 
 }

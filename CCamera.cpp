@@ -1,10 +1,10 @@
 #include <iostream>
-#include "Camera.h"
-#include "MapCell.h"
+#include "CCamera.h"
+#include "CMapCell.h"
 #define texWidth 64
 #define texHeight 64
 
-Camera::Camera(Clock* clock, int screenWidth, int screenHeight, Map map)
+CCamera::CCamera(Clock* clock, int screenWidth, int screenHeight, CMap map)
 {
 	this->clock = clock;
 	this->screenWidth = screenWidth;
@@ -46,7 +46,7 @@ Camera::Camera(Clock* clock, int screenWidth, int screenHeight, Map map)
 
 }
 
-VertexArray Camera::draw()
+VertexArray CCamera::draw()
 {
 	VertexArray pixels(Points, screenWidth * screenHeight);
 	
@@ -157,11 +157,11 @@ VertexArray Camera::draw()
 
 	if (Keyboard::isKeyPressed(Keyboard::W))
 	{
-		MapCell* cellX = map.map[int(posX + dirX * moveSpeed)][int(posY)];
-		MapCell* cellY = map.map[int(posX)][int(posY + dirY * moveSpeed)];
+		CMapCell* cellX = map.map[int(posX + dirX * moveSpeed)][int(posY)];
+		CMapCell* cellY = map.map[int(posX)][int(posY + dirY * moveSpeed)];
 
-		MapCell* cellNextX = map.map[int(posX + dirX * moveSpeed + (dirX >= 0 ? 1 : -1))][int(posY)];
-		MapCell* cellNextY = map.map[int(posX)][int(posY + dirY * moveSpeed + (dirY >= 0 ? 1 : -1))];
+		CMapCell* cellNextX = map.map[int(posX + dirX * moveSpeed + (dirX >= 0 ? 1 : -1))][int(posY)];
+		CMapCell* cellNextY = map.map[int(posX)][int(posY + dirY * moveSpeed + (dirY >= 0 ? 1 : -1))];
 		float diffX = floorf(abs(int(posX + dirX * moveSpeed) - posX) * 10.0 + 0.5) / 10.0;
 		bool canMoveX = cellX->type == EMPTY && (cellNextX->type == EMPTY || (cellNextX->type == BLOCK && ((diffX >= 0.5 && dirX < 0) || ((diffX <= 0.5 || diffX > 1) && dirX >= 0))));
 		float diffY = floorf(abs(int(posY + dirY * moveSpeed) - posY) * 10.0 + 0.5) / 10.0;
@@ -173,11 +173,11 @@ VertexArray Camera::draw()
 	}
 	if (Keyboard::isKeyPressed(Keyboard::S))
 	{
-		MapCell* cellX = map.map[int(posX - dirX * moveSpeed)][int(posY)];
-		MapCell* cellY = map.map[int(posX)][int(posY - dirY * moveSpeed)];
+		CMapCell* cellX = map.map[int(posX - dirX * moveSpeed)][int(posY)];
+		CMapCell* cellY = map.map[int(posX)][int(posY - dirY * moveSpeed)];
 
-		MapCell* cellNextX = map.map[int(posX + dirX * moveSpeed + (dirX >= 0 ? -1 : 1))][int(posY)];
-		MapCell* cellNextY = map.map[int(posX)][int(posY + dirY * moveSpeed + (dirY >= 0 ? -1 : 1))];
+		CMapCell* cellNextX = map.map[int(posX + dirX * moveSpeed + (dirX >= 0 ? -1 : 1))][int(posY)];
+		CMapCell* cellNextY = map.map[int(posX)][int(posY + dirY * moveSpeed + (dirY >= 0 ? -1 : 1))];
 		float diffX = floorf(abs(int(posX + dirX * moveSpeed) - posX) * 10.0 + 0.5) / 10.0;
 		bool canMoveX = cellX->type == EMPTY && (cellNextX->type == EMPTY || (cellNextX->type == BLOCK && ((diffX >= 0.5 && dirX >= 0) || ((diffX <= 0.5 || diffX > 1) && dirX < 0))));
 		float diffY = floorf(abs(int(posY + dirY * moveSpeed) - posY) * 10.0 + 0.5) / 10.0;

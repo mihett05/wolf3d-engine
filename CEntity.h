@@ -4,13 +4,13 @@
 using namespace std;
 using namespace sf;
 
-class Entity
+class CEntity
 {
 public:
 	Sprite sprite;
 	float x, y;
-	Entity() = default;
-	Entity(Sprite sprite);
+	CEntity() = default;
+	CEntity(Sprite sprite);
 	void setPosition(Vector2f pos);
 };
 

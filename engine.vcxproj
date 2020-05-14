@@ -135,27 +135,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Block.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Entity.cpp" />
-    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="CBlock.cpp" />
+    <ClCompile Include="CCamera.cpp" />
+    <ClCompile Include="CEntity.cpp" />
+    <ClCompile Include="CGame.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Map.cpp" />
-    <ClCompile Include="MapCell.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Textures.cpp" />
-    <ClCompile Include="utils.cpp" />
+    <ClCompile Include="CMap.cpp" />
+    <ClCompile Include="CMapCell.cpp" />
+    <ClCompile Include="CTextures.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Block.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="Entity.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="Map.h" />
-    <ClInclude Include="MapCell.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="Textures.h" />
-    <ClInclude Include="utils.h" />
+    <ClInclude Include="CBlock.h" />
+    <ClInclude Include="CCamera.h" />
+    <ClInclude Include="CEntity.h" />
+    <ClInclude Include="CGame.h" />
+    <ClInclude Include="CMap.h" />
+    <ClInclude Include="CMapCell.h" />
+    <ClInclude Include="CTextures.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

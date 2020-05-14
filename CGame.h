@@ -2,10 +2,9 @@
 #include <string>
 #include <vector>
 #include <SFML/Graphics.hpp>
-#include "Player.h"
-#include "Entity.h"
-#include "Camera.h"
-#include "Map.h"
+#include "CEntity.h"
+#include "CCamera.h"
+#include "CMap.h"
 
 #define mapWidth 24
 #define mapHeight 24
@@ -13,19 +12,18 @@
 using namespace sf;
 using namespace std;
 
-class Game
+class CGame
 {
 protected:
 	unique_ptr<RenderWindow> window;
 	Event event;
-	Player player;
 	Clock clock;
-	Camera camera;
-	Map map;
-	vector<Entity> entities;
+	CCamera camera;
+	CMap map;
+	vector<CEntity> entities;
 	
 public:
-	Game(unsigned int width, unsigned int height, string title, unsigned int frameLimit);
+	CGame(unsigned int width, unsigned int height, string title, unsigned int frameLimit);
 	void draw();
 	void update();
 	void loop();

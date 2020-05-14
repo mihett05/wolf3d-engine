@@ -1,8 +1,8 @@
-#include "Map.h"
+#include "CMap.h"
 #include <iostream>
 #include <fstream>
 
-Map::Map(string fileName)
+CMap::CMap(string fileName)
 {
 	this->fileName = fileName;
 	char buffer[32];
@@ -18,7 +18,7 @@ Map::Map(string fileName)
 			file.getline(buffer, 32);
 			for (size_t x = 0; x < 32; x++)
 			{
-				MapCell* cell = MapCell::getByChar(buffer[x]);
+				CMapCell* cell = CMapCell::getByChar(buffer[x]);
 				switch (buffer[x])
 				{
 				case '@':
@@ -34,7 +34,7 @@ Map::Map(string fileName)
 	}
 }
 
-void Map::tick()
+void CMap::tick()
 {
 
 }
