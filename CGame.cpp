@@ -12,9 +12,10 @@ CGame::CGame(unsigned int width, unsigned int height, string title, unsigned int
 {
 	window = make_unique<RenderWindow>(VideoMode(width, height), title);
 	window->setFramerateLimit(frameLimit);
-	map = CMap::CMap("maps/level_1.txt");
+	map = new CMap("maps/level_1.txt");
+	clock = new Clock();
 	
-	camera = CCamera::CCamera(&clock, window->getSize().x, window->getSize().y, map);
+	camera = new CCamera(clock, window->getSize().x, window->getSize().y, map);
 }
 
 
@@ -22,7 +23,7 @@ void CGame::draw()
 {
 	window->clear(Color(84, 84, 84));
 	
-	VertexArray buffer = camera.draw();
+	VertexArray buffer = camera->draw();
 	window->draw(buffer);
 	window->display();
 }
@@ -37,7 +38,7 @@ void CGame::update()
 			player.rotate(1 * clock.getElapsedTime().asSeconds());
 
 	}*/
-	clock.restart();
+	clock->restart();
 	draw();
 }
 

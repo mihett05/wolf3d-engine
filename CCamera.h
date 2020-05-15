@@ -14,12 +14,12 @@ private:
 	double posX, posY;
 	double dirX, dirY;
 	double planeX, planeY;
-	CMap map;
+	CMap* map;
 	Clock* clock;
-	vector<Uint32> texture[8];
+	vector<Uint32> texture[32];
 public:
 	CCamera() = default;
-	CCamera(Clock* clock, int screenWidth, int screenHeight, CMap map);
+	CCamera(Clock* clock, int screenWidth, int screenHeight, CMap* map);
 	VertexArray draw();
 };
 

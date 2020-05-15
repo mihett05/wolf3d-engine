@@ -1,10 +1,11 @@
 #pragma once
 #include <fstream>
 #include <string>
+#include <vector>
 #include <SFML/Graphics.hpp>
 
 #include "CMapCell.h"
-#include <SFML/Graphics.hpp>
+#include "CEntity.h"
 
 #define mapWidth 32
 #define mapHeight 32
@@ -20,8 +21,11 @@ private:
 public:
 	Vector2f spawnPosition;
 	CMapCell* map[mapHeight][mapWidth];
+	vector<CEntity*>* entities;
+
 	CMap(string fileName);
 	CMap() = default;
 	void tick();
+	CEntity* getEntityOn(float x, float y);
 };
 

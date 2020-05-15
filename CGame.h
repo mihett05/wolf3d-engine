@@ -17,10 +17,9 @@ class CGame
 protected:
 	unique_ptr<RenderWindow> window;
 	Event event;
-	Clock clock;
-	CCamera camera;
-	CMap map;
-	vector<CEntity> entities;
+	Clock* clock;
+	CCamera* camera;
+	CMap* map;
 	
 public:
 	CGame(unsigned int width, unsigned int height, string title, unsigned int frameLimit);

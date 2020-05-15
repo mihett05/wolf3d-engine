@@ -4,24 +4,24 @@
 #define texWidth 64
 #define texHeight 64
 
-CCamera::CCamera(Clock* clock, int screenWidth, int screenHeight, CMap map)
+CCamera::CCamera(Clock* clock, int screenWidth, int screenHeight, CMap* map)
 {
 	this->clock = clock;
 	this->screenWidth = screenWidth;
 	this->screenHeight = screenHeight;
 	this->map = map;
 
-	posX = map.spawnPosition.x + 0.5;
-	posY = map.spawnPosition.y + 0.5;
+	posX = map->spawnPosition.x + 0.5;
+	posY = map->spawnPosition.y + 0.5;
 	dirX = -1.0;
 	dirY = 0.0;
 	planeX = 0.0;
 	planeY = 0.66;
 	
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i < 32; i++)
 		texture[i].resize(texWidth * texHeight);
 
-	Image eagle, redbrick, purplestone, greystone, bluestone, mossy, wood, colorstone;
+	Image eagle, redbrick, purplestone, greystone, bluestone, mossy, wood, colorstone, lamp;
 	eagle.loadFromFile("pics/eagle.png");
 	redbrick.loadFromFile("pics/redbrick.png");
 	purplestone.loadFromFile("pics/purplestone.png");
@@ -30,6 +30,7 @@ CCamera::CCamera(Clock* clock, int screenWidth, int screenHeight, CMap map)
 	mossy.loadFromFile("pics/mossy.png");
 	wood.loadFromFile("pics/wood.png");
 	colorstone.loadFromFile("pics/colorstone.png");
+	lamp.loadFromFile("pics/eLamp.png");
 
 	for (int x = 0; x < texWidth; x++)
 		for (int y = 0; y < texHeight; y++)
@@ -42,6 +43,7 @@ CCamera::CCamera(Clock* clock, int screenWidth, int screenHeight, CMap map)
 			texture[5][texWidth * y + x] = mossy.getPixel(x, y).toInteger();
 			texture[6][texWidth * y + x] = wood.getPixel(x, y).toInteger();
 			texture[7][texWidth * y + x] = colorstone.getPixel(x, y).toInteger();
+			texture[8][texWidth * y + x] = lamp.getPixel(x, y).toInteger();
 		}
 
 }
@@ -71,6 +73,9 @@ VertexArray CCamera::draw()
 
 		bool hit = false;
 		int side;
+
+		bool isEntity = false;
+		CEntity* ent = nullptr;
 
 		if (rayDirX < 0)
 		{
@@ -107,7 +112,15 @@ VertexArray CCamera::draw()
 				mapY += stepY;
 				side = 1;
 			}
-			if (map.map[mapX][mapY]->type != EMPTY) hit = true;
+			ent = map->getEntityOn(mapX, mapY);
+			if (map->map[mapX][mapY]->type != EMPTY)
+				hit = true;
+			else if (ent != nullptr)
+			{
+				cout << ent->textureId << endl;
+				hit = true;
+				isEntity = true;
+			}
 		}
 
 		if (side == 0) perpWallDist = (mapX - posX + (1 - stepX) / 2) / rayDirX;
@@ -120,11 +133,13 @@ VertexArray CCamera::draw()
 		int drawEnd = lineHeight / 2 + screenHeight / 2;
 		if (drawEnd >= screenHeight) drawEnd = screenHeight - 1;
 		int texNum = 0;
-
-		if (map.map[mapX][mapY]->type == BLOCK)
+		
+		if (map->map[mapX][mapY]->type == BLOCK)
 		{
-			texNum = map.map[mapX][mapY]->block.textureId;
+			texNum = map->map[mapX][mapY]->block.textureId;
 		}
+		else if (isEntity)
+			texNum = ent->textureId;
 		else
 			continue;
 		
@@ -157,11 +172,11 @@ VertexArray CCamera::draw()
 
 	if (Keyboard::isKeyPressed(Keyboard::W))
 	{
-		CMapCell* cellX = map.map[int(posX + dirX * moveSpeed)][int(posY)];
-		CMapCell* cellY = map.map[int(posX)][int(posY + dirY * moveSpeed)];
+		CMapCell* cellX = map->map[int(posX + dirX * moveSpeed)][int(posY)];
+		CMapCell* cellY = map->map[int(posX)][int(posY + dirY * moveSpeed)];
 
-		CMapCell* cellNextX = map.map[int(posX + dirX * moveSpeed + (dirX >= 0 ? 1 : -1))][int(posY)];
-		CMapCell* cellNextY = map.map[int(posX)][int(posY + dirY * moveSpeed + (dirY >= 0 ? 1 : -1))];
+		CMapCell* cellNextX = map->map[int(posX + dirX * moveSpeed + (dirX >= 0 ? 1 : -1))][int(posY)];
+		CMapCell* cellNextY = map->map[int(posX)][int(posY + dirY * moveSpeed + (dirY >= 0 ? 1 : -1))];
 		float diffX = floorf(abs(int(posX + dirX * moveSpeed) - posX) * 10.0 + 0.5) / 10.0;
 		bool canMoveX = cellX->type == EMPTY && (cellNextX->type == EMPTY || (cellNextX->type == BLOCK && ((diffX >= 0.5 && dirX < 0) || ((diffX <= 0.5 || diffX > 1) && dirX >= 0))));
 		float diffY = floorf(abs(int(posY + dirY * moveSpeed) - posY) * 10.0 + 0.5) / 10.0;
@@ -173,11 +188,11 @@ VertexArray CCamera::draw()
 	}
 	if (Keyboard::isKeyPressed(Keyboard::S))
 	{
-		CMapCell* cellX = map.map[int(posX - dirX * moveSpeed)][int(posY)];
-		CMapCell* cellY = map.map[int(posX)][int(posY - dirY * moveSpeed)];
+		CMapCell* cellX = map->map[int(posX - dirX * moveSpeed)][int(posY)];
+		CMapCell* cellY = map->map[int(posX)][int(posY - dirY * moveSpeed)];
 
-		CMapCell* cellNextX = map.map[int(posX + dirX * moveSpeed + (dirX >= 0 ? -1 : 1))][int(posY)];
-		CMapCell* cellNextY = map.map[int(posX)][int(posY + dirY * moveSpeed + (dirY >= 0 ? -1 : 1))];
+		CMapCell* cellNextX = map->map[int(posX + dirX * moveSpeed + (dirX >= 0 ? -1 : 1))][int(posY)];
+		CMapCell* cellNextY = map->map[int(posX)][int(posY + dirY * moveSpeed + (dirY >= 0 ? -1 : 1))];
 		float diffX = floorf(abs(int(posX + dirX * moveSpeed) - posX) * 10.0 + 0.5) / 10.0;
 		bool canMoveX = cellX->type == EMPTY && (cellNextX->type == EMPTY || (cellNextX->type == BLOCK && ((diffX >= 0.5 && dirX >= 0) || ((diffX <= 0.5 || diffX > 1) && dirX < 0))));
 		float diffY = floorf(abs(int(posY + dirY * moveSpeed) - posY) * 10.0 + 0.5) / 10.0;
