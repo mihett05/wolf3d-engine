@@ -5,7 +5,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "CMapCell.h"
-#include "CEntity.h"
+#include "../CEntity.h"
 
 #define mapWidth 32
 #define mapHeight 32

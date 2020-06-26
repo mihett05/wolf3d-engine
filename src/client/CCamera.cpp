@@ -1,6 +1,5 @@
 #include <iostream>
 #include "CCamera.h"
-#include "CMapCell.h"
 #define texWidth 64
 #define texHeight 64
 

@@ -1,6 +1,6 @@
 #pragma once
 #include "CBlock.h"
-#include "CEntity.h"
+#include "../CEntity.h"
 
 #define EMPTY 0
 #define BLOCK 1

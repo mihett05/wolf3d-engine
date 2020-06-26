@@ -1,7 +1,8 @@
 #pragma once
 #include <vector>
 #include <SFML/Graphics.hpp>
-#include "CMap.h"
+#include "map/CMap.h"
+#include "map/CMapCell.h"
 
 using namespace std;
 using namespace sf;

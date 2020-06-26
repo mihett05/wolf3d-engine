@@ -1,0 +1,7 @@
+[
+{
+  "directory": "F:/Programming/Projects/wolf3d/build",
+  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\G__~1.EXE  -DSFML_STATIC @CMakeFiles/main.dir/includes_CXX.rsp -O2 -g -DNDEBUG   -o CMakeFiles\\main.dir\\src\\client\\main.cpp.obj -c F:\\Programming\\Projects\\wolf3d\\src\\client\\main.cpp",
+  "file": "F:/Programming/Projects/wolf3d/src/client/main.cpp"
+}
+]

@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "CEntity.h"
 #include "CCamera.h"
-#include "CMap.h"
+#include "map/CMap.h"
 
 #define mapWidth 24
 #define mapHeight 24
