@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "CEntity.h"
 #include "CCamera.h"
-#include "map/CMap.h"
+#include "./map/CMap.h"
 
 #define mapWidth 24
 #define mapHeight 24
@@ -12,8 +12,7 @@
 using namespace sf;
 using namespace std;
 
-class CGame
-{
+class CGame {
 protected:
 	unique_ptr<RenderWindow> window;
 	Event event;

@@ -4,8 +4,7 @@
 using namespace std;
 using namespace sf;
 
-class CTextures
-{
+class CTextures {
 	static Image eagle;
 };
 

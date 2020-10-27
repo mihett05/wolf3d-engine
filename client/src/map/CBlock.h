@@ -5,8 +5,7 @@
 using namespace sf;
 using namespace std;
 
-class CBlock
-{
+class CBlock {
 public:
 	int textureId;
 	CBlock() = default;

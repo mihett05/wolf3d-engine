@@ -7,25 +7,23 @@
 #include "CMapCell.h"
 #include "../CEntity.h"
 
-#define mapWidth 32
-#define mapHeight 32
+const size_t MAP_WIDTH = 32;
+const size_t MAP_HEIGHT = 32;
 
 using namespace std;
 using namespace sf;
 
 
-class CMap
-{
+class CMap {
 private:
 	string fileName;
 public:
 	Vector2f spawnPosition;
-	CMapCell* map[mapHeight][mapWidth];
+	CMapCell*** map;;
 	vector<CEntity*>* entities;
 
-	CMap(string fileName);
-	CMap() = default;
+	explicit CMap(const string& fileName);
 	void tick();
-	CEntity* getEntityOn(float x, float y);
+	CEntity* getEntityOn(float x, float y) const;
+	~CMap();
 };
-

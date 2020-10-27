@@ -8,8 +8,7 @@
 
 #include "CGame.h"
 
-CGame::CGame(unsigned int width, unsigned int height, string title, unsigned int frameLimit)
-{
+CGame::CGame(unsigned int width, unsigned int height, string title, unsigned int frameLimit) {
 	window = make_unique<RenderWindow>(VideoMode(width, height), title);
 	window->setFramerateLimit(frameLimit);
 	map = new CMap("maps/level_1.txt");
@@ -19,8 +18,7 @@ CGame::CGame(unsigned int width, unsigned int height, string title, unsigned int
 }
 
 
-void CGame::draw()
-{
+void CGame::draw() {
 	window->clear(Color(84, 84, 84));
 	
 	VertexArray buffer = camera->draw();
@@ -28,10 +26,8 @@ void CGame::draw()
 	window->display();
 }
 
-void CGame::update()
-{
-	/*if (Keyboard::isKeyPressed(Keyboard::A) || Keyboard::isKeyPressed(Keyboard::D))
-	{
+void CGame::update() {
+	/*if (Keyboard::isKeyPressed(Keyboard::A) || Keyboard::isKeyPressed(Keyboard::D)) {
 		if (Keyboard::isKeyPressed(Keyboard::A))
 			player.rotate(-1 * clock.getElapsedTime().asSeconds());
 		if (Keyboard::isKeyPressed(Keyboard::D))
@@ -42,12 +38,9 @@ void CGame::update()
 	draw();
 }
 
-void CGame::loop()
-{
-	while (window->isOpen())
-	{
-		while (window->pollEvent(this->event))
-		{
+void CGame::loop() {
+	while (window->isOpen()) {
+		while (window->pollEvent(this->event)) {
 			if (event.type == sf::Event::Closed || event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
 				window->close();
 		}
@@ -56,7 +49,6 @@ void CGame::loop()
 
 }
 
-void CGame::destroy()
-{
+void CGame::destroy() {
 
 }

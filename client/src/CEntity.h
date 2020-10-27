@@ -4,8 +4,7 @@
 using namespace std;
 using namespace sf;
 
-class CEntity
-{
+class CEntity {
 protected:
 	float x, y;
 	bool isSolid;

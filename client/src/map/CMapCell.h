@@ -8,15 +8,14 @@
 
 using namespace std;
 
-class CMapCell
-{
+class CMapCell {
 public:
 	int type;
 	CEntity entity;
 	CBlock block;
 	CMapCell();
-	CMapCell(CEntity ent);
-	CMapCell(CBlock block);
+	explicit CMapCell(CEntity ent);
+	explicit CMapCell(CBlock block);
 	static CMapCell* getByChar(char c);
 };
 

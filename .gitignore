@@ -34,3 +34,6 @@
 Debug/
 Release/
 build/
+
+.idea/
+cmake-build-*/

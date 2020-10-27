@@ -3,11 +3,10 @@
 #define texWidth 64
 #define texHeight 64
 
-CCamera::CCamera(Clock* clock, int screenWidth, int screenHeight, CMap* map)
-{
+CCamera::CCamera(Clock* clock, int width, int height, CMap* map) {
 	this->clock = clock;
-	this->screenWidth = screenWidth;
-	this->screenHeight = screenHeight;
+	this->screenWidth = width;
+	this->screenHeight = height;
 	this->map = map;
 
 	posX = map->spawnPosition.x + 0.5;
@@ -17,23 +16,21 @@ CCamera::CCamera(Clock* clock, int screenWidth, int screenHeight, CMap* map)
 	planeX = 0.0;
 	planeY = 0.66;
 	
-	for (int i = 0; i < 32; i++)
-		texture[i].resize(texWidth * texHeight);
+	for (auto& i : texture) i.resize(texWidth * texHeight);
 
 	Image eagle, redbrick, purplestone, greystone, bluestone, mossy, wood, colorstone, lamp;
-	eagle.loadFromFile("pics/eagle.png");
-	redbrick.loadFromFile("pics/redbrick.png");
-	purplestone.loadFromFile("pics/purplestone.png");
-	greystone.loadFromFile("pics/greystone.png");
-	bluestone.loadFromFile("pics/bluestone.png");
-	mossy.loadFromFile("pics/mossy.png");
-	wood.loadFromFile("pics/wood.png");
-	colorstone.loadFromFile("pics/colorstone.png");
-	lamp.loadFromFile("pics/eLamp.png");
+	eagle.loadFromFile("media/eagle.png");
+	redbrick.loadFromFile("media/redbrick.png");
+	purplestone.loadFromFile("media/purplestone.png");
+	greystone.loadFromFile("media/greystone.png");
+	bluestone.loadFromFile("media/bluestone.png");
+	mossy.loadFromFile("media/mossy.png");
+	wood.loadFromFile("media/wood.png");
+	colorstone.loadFromFile("media/colorstone.png");
+	lamp.loadFromFile("media/eLamp.png");
 
 	for (int x = 0; x < texWidth; x++)
-		for (int y = 0; y < texHeight; y++)
-		{
+		for (int y = 0; y < texHeight; y++) {
 			texture[0][texWidth * y + x] = eagle.getPixel(x, y).toInteger();
 			texture[1][texWidth * y + x] = redbrick.getPixel(x, y).toInteger();
 			texture[2][texWidth * y + x] = purplestone.getPixel(x, y).toInteger();
@@ -47,12 +44,10 @@ CCamera::CCamera(Clock* clock, int screenWidth, int screenHeight, CMap* map)
 
 }
 
-VertexArray CCamera::draw()
-{
+VertexArray CCamera::draw() {
 	VertexArray pixels(Points, screenWidth * screenHeight);
 	
-	for (int x = 0; x < screenWidth; x++)
-	{
+	for (int x = 0; x < screenWidth; x++) {
 		double cameraX = (double)(2 * x) / (double)screenWidth - 1;
 		double rayDirX = dirX + planeX * cameraX;
 		double rayDirY = dirY + planeY * cameraX;
@@ -76,37 +71,30 @@ VertexArray CCamera::draw()
 		bool isEntity = false;
 		CEntity* ent = nullptr;
 
-		if (rayDirX < 0)
-		{
+		if (rayDirX < 0) {
 			stepX = -1;
 			sideDistX = (posX - mapX) * deltaDistX;
 		}
-		else
-		{
+		else {
 			stepX = 1;
 			sideDistX = (mapX + 1.0 - posX) * deltaDistX;
 		}
-		if (rayDirY < 0)
-		{
+		if (rayDirY < 0) {
 			stepY = -1;
 			sideDistY = (posY - mapY) * deltaDistY;
 		}
-		else
-		{
+		else {
 			stepY = 1;
 			sideDistY = (mapY + 1.0 - posY) * deltaDistY;
 		}
 
-		while (!hit)
-		{
-			if (sideDistX < sideDistY)
-			{
+		while (!hit) {
+			if (sideDistX < sideDistY) {
 				sideDistX += deltaDistX;
 				mapX += stepX;
 				side = 0;
 			}
-			else
-			{
+			else {
 				sideDistY += deltaDistY;
 				mapY += stepY;
 				side = 1;
@@ -114,8 +102,7 @@ VertexArray CCamera::draw()
 			ent = map->getEntityOn(mapX, mapY);
 			if (map->map[mapX][mapY]->type != EMPTY)
 				hit = true;
-			else if (ent != nullptr)
-			{
+			else if (ent != nullptr) {
 				cout << ent->textureId << endl;
 				hit = true;
 				isEntity = true;
@@ -133,8 +120,7 @@ VertexArray CCamera::draw()
 		if (drawEnd >= screenHeight) drawEnd = screenHeight - 1;
 		int texNum = 0;
 		
-		if (map->map[mapX][mapY]->type == BLOCK)
-		{
+		if (map->map[mapX][mapY]->type == BLOCK) {
 			texNum = map->map[mapX][mapY]->block.textureId;
 		}
 		else if (isEntity)
@@ -154,8 +140,7 @@ VertexArray CCamera::draw()
 
 		double step = 1.0 * texHeight / lineHeight;
 		double texPos = (drawStart - screenHeight / 2 + lineHeight / 2) * step;
-		for (int y = drawStart; y < drawEnd; y++)
-		{
+		for (int y = drawStart; y < drawEnd; y++) {
 			int texY = (int)texPos & (texHeight - 1);
 			texPos += step;
 			Uint32 color = texture[texNum][texHeight * texY + texX];
@@ -169,8 +154,7 @@ VertexArray CCamera::draw()
 	double moveSpeed = clock->getElapsedTime().asSeconds() * 5.0; //the constant value is in squares/second
 	double rotSpeed = clock->getElapsedTime().asSeconds() * 3.0; //the constant value is in radians/second
 
-	if (Keyboard::isKeyPressed(Keyboard::W))
-	{
+	if (Keyboard::isKeyPressed(Keyboard::W)) {
 		CMapCell* cellX = map->map[int(posX + dirX * moveSpeed)][int(posY)];
 		CMapCell* cellY = map->map[int(posX)][int(posY + dirY * moveSpeed)];
 
@@ -185,8 +169,7 @@ VertexArray CCamera::draw()
 		if (canMoveY)
 			posY += dirY * moveSpeed;
 	}
-	if (Keyboard::isKeyPressed(Keyboard::S))
-	{
+	if (Keyboard::isKeyPressed(Keyboard::S)) {
 		CMapCell* cellX = map->map[int(posX - dirX * moveSpeed)][int(posY)];
 		CMapCell* cellY = map->map[int(posX)][int(posY - dirY * moveSpeed)];
 
@@ -201,8 +184,7 @@ VertexArray CCamera::draw()
 		if (canMoveY)
 			posY -= dirY * moveSpeed;
 	}
-	if (Keyboard::isKeyPressed(Keyboard::D))
-	{
+	if (Keyboard::isKeyPressed(Keyboard::D)) {
 		double oldDirX = dirX;
 		dirX = dirX * cos(-rotSpeed) - dirY * sin(-rotSpeed);
 		dirY = oldDirX * sin(-rotSpeed) + dirY * cos(-rotSpeed);
@@ -210,8 +192,7 @@ VertexArray CCamera::draw()
 		planeX = planeX * cos(-rotSpeed) - planeY * sin(-rotSpeed);
 		planeY = oldPlaneX * sin(-rotSpeed) + planeY * cos(-rotSpeed);
 	}
-	if (Keyboard::isKeyPressed(Keyboard::A))
-	{
+	if (Keyboard::isKeyPressed(Keyboard::A)) {
 		double oldDirX = dirX;
 		dirX = dirX * cos(rotSpeed) - dirY * sin(rotSpeed);
 		dirY = oldDirX * sin(rotSpeed) + dirY * cos(rotSpeed);
