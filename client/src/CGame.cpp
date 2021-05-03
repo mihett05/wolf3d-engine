@@ -8,7 +8,7 @@
 
 #include "CGame.h"
 
-CGame::CGame(unsigned int width, unsigned int height, string title, unsigned int frameLimit) {
+CGame::CGame(unsigned int width, unsigned int height, const string& title, unsigned int frameLimit) {
 	window = make_unique<RenderWindow>(VideoMode(width, height), title);
 	window->setFramerateLimit(frameLimit);
 	map = new CMap("maps/level_1.txt");

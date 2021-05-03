@@ -21,7 +21,7 @@ protected:
 	CMap* map;
 	
 public:
-	CGame(unsigned int width, unsigned int height, string title, unsigned int frameLimit);
+	CGame(unsigned int width, unsigned int height, const string& title, unsigned int frameLimit);
 	void draw();
 	void update();
 	void loop();

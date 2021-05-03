@@ -179,10 +179,10 @@ VertexArray CCamera::draw() {
 		bool canMoveX = cellX->type == EMPTY && (cellNextX->type == EMPTY || (cellNextX->type == BLOCK && ((diffX >= 0.5 && dirX >= 0) || ((diffX <= 0.5 || diffX > 1) && dirX < 0))));
 		float diffY = floorf(abs(int(posY + dirY * moveSpeed) - posY) * 10.0 + 0.5) / 10.0;
 		bool canMoveY = cellY->type == EMPTY && (cellNextY->type == EMPTY || (cellNextY->type == BLOCK && ((diffY >= 0.5 && dirY >= 0) || ((diffY <= 0.5 || diffY > 1) && dirY < 0))));
-		if (canMoveX)
-			posX -= dirX * moveSpeed;
-		if (canMoveY)
-			posY -= dirY * moveSpeed;
+		if (canMoveX && canMoveY) {
+            posX -= dirX * moveSpeed;
+            posY -= dirY * moveSpeed;
+		}
 	}
 	if (Keyboard::isKeyPressed(Keyboard::D)) {
 		double oldDirX = dirX;
