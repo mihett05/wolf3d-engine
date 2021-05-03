@@ -2,6 +2,9 @@
 
 CEntity::CEntity(int textureId, float x, float y, bool isSolid) {
 	this->textureId = textureId;
+	this->x = x;
+	this->y = y;
+	this->isSolid = isSolid;
 }
 
 

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef WOLF3D_CENTITY_H
+#define WOLF3D_CENTITY_H
+
 #include <SFML/Graphics.hpp>
 
 using namespace std;
@@ -19,3 +21,4 @@ public:
 	static CEntity* getByChar(char c, float x, float y);
 };
 
+#endif

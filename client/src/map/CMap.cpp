@@ -1,6 +1,5 @@
 #include "CMap.h"
 #include <iostream>
-#include <fstream>
 
 CMap::CMap(const string& fileName) {
 	entities = new vector<CEntity*>();
@@ -12,28 +11,30 @@ CMap::CMap(const string& fileName) {
 
 	this->fileName = fileName;
 
-	char buffer[32];
+	char* buffer = (char*)calloc(sizeof(char), 32);
 	ifstream file(fileName);
 	if (!file.is_open()) {
-		cout << "Not able to open a file " << fileName << endl;
+		cout << "Can't open a file " << fileName << endl;
 	}
 	else {
 		for (int y = 0; y < 32 && !file.eof(); y++) {
 			file.getline(buffer, 32);
 			for (int x = 0; x < 32; x++) {
-				CMapCell* cell = CMapCell::getByChar(buffer[x]);
-				CEntity* ent = CEntity::getByChar(buffer[x], float(x), float(y));
-				if (ent != nullptr)
-					entities->push_back(ent);
-				switch (buffer[x]) {
-				case '@':
-					spawnPosition = Vector2f(x, y);
-					break;
-				default:
-					break;
-				}
-				this->map[y][x] = cell;
-				
+			    if (buffer[x] != 0) {
+                    switch (buffer[x]) {
+                        case '@':
+                            spawnPosition = Vector2f(x, y);
+                            this->map[y][x] = CMapCell::getByChar('0');
+                            break;
+                        default:
+                            CMapCell* cell = CMapCell::getByChar(buffer[x]);
+                            //CEntity* ent = CEntity::getByChar(buffer[x], float(x), float(y));
+                            //if (ent != nullptr)
+                            //	entities->push_back(ent);
+                            this->map[y][x] = cell;
+                            break;
+                    }
+			    }
 			}
 		}
 	}

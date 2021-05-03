@@ -19,7 +19,7 @@ private:
 	string fileName;
 public:
 	Vector2f spawnPosition;
-	CMapCell*** map;;
+	CMapCell*** map;
 	vector<CEntity*>* entities;
 
 	explicit CMap(const string& fileName);

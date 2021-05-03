@@ -17,7 +17,6 @@ private:
 	double planeX{}, planeY{};
 	CMap* map{};
 	Clock* clock{};
-	vector<Uint32> texture[32];
 public:
 	CCamera() = default;
 	CCamera(Clock* clock, int screenWidth, int screenHeight, CMap* map);

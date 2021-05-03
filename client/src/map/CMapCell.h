@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include "CBlock.h"
 #include "../CEntity.h"
 
@@ -11,11 +12,11 @@ using namespace std;
 class CMapCell {
 public:
 	int type;
-	CEntity entity;
-	CBlock block;
+	CEntity* entity;
+	CBlock* block;
 	CMapCell();
-	explicit CMapCell(CEntity ent);
-	explicit CMapCell(CBlock block);
+	explicit CMapCell(CEntity* ent);
+	explicit CMapCell(CBlock* block);
 	static CMapCell* getByChar(char c);
 };
 

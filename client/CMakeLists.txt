@@ -6,14 +6,14 @@ add_executable(client
         src/CCamera.h
         src/CEntity.cpp
         src/CEntity.h
-        src/CTextures.cpp
-        src/CTextures.h
         src/map/CMap.cpp
         src/map/CMap.h
         src/map/CMapCell.cpp
         src/map/CMapCell.h
         src/map/CBlock.cpp
         src/map/CBlock.h
+        src/CTexture.cpp
+        src/CTexture.h
 )
 
 target_link_libraries(client -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network)

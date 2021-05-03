@@ -4,25 +4,27 @@ CMapCell::CMapCell() {
 	type = EMPTY;
 }
 
-CMapCell::CMapCell(CEntity ent) {
+CMapCell::CMapCell(CEntity* ent) {
 	type = ENTITY;
 	this->entity = ent;
 }
 
-CMapCell::CMapCell(CBlock block) {
+CMapCell::CMapCell(CBlock* block) {
 	type = BLOCK;
 	this->block = block;
 }
 
 CMapCell* CMapCell::getByChar(char c) {
 	auto* cell = new CMapCell();
-	auto res = CBlock::map.find(c);
-	if (res != CBlock::map.end()) {
+	if (CBlock::isBlock(c)) {
 		cell->type = BLOCK;
-		cell->block = res->second;
+		cell->block = CBlock::getBlockBySign(c);
 		return cell;
-	} else {
+	} else if (c == '0') {
 		cell->type = EMPTY;
 		return cell;
+	} else {
+	    cout << "Unknown symbol '" << c << "' in map" << endl;
+	    return nullptr;
 	}
 }

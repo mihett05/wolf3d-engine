@@ -1,17 +1,22 @@
 #include "CBlock.h"
 
-CBlock::CBlock(int textureId) {
-	this->textureId = textureId;
+char CBlock::blocks[] = {
+    '1', '2', '3', '4', '5', '6', '7', '8'
+};
+
+map<char, CBlock*> CBlock::objects = map<char, CBlock*>();
+
+CBlock::CBlock(char sign) {
+	texture = sign;
 }
 
-CBlock CBlock::eagle(1);
-CBlock CBlock::redBrick(2);
-CBlock CBlock::purpleStone(3);
-CBlock CBlock::greyStone(4);
-CBlock CBlock::blueStone(5);
-CBlock CBlock::mossy(6);
-CBlock CBlock::wood(7);
-CBlock CBlock::colorStone(8);
+bool CBlock::isBlock(char sign) {
+    return find(blocks, blocks + sizeof(blocks), sign) != blocks + sizeof(blocks);
+}
 
-map<char, CBlock> CBlock::map = { {'1', CBlock::eagle}, {'2', CBlock::redBrick}, {'3', CBlock::purpleStone}, {'4', CBlock::greyStone}, {'5', CBlock::blueStone}, {'6', CBlock::mossy}, {'7', CBlock::wood}, {'8', CBlock::colorStone},
-};
+CBlock* CBlock::getBlockBySign(char sign) {
+    if (objects.find(sign) == objects.end()) {
+        objects[sign] = new CBlock(sign);
+    }
+    return objects[sign];
+}

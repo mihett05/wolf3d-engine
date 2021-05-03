@@ -1,5 +1,7 @@
 #include <iostream>
 #include "CCamera.h"
+#include "CTexture.h"
+
 #define texWidth 64
 #define texHeight 64
 
@@ -15,33 +17,9 @@ CCamera::CCamera(Clock* clock, int width, int height, CMap* map) {
 	dirY = 0.0;
 	planeX = 0.0;
 	planeY = 0.66;
-	
-	for (auto& i : texture) i.resize(texWidth * texHeight);
 
-	Image eagle, redbrick, purplestone, greystone, bluestone, mossy, wood, colorstone, lamp;
-	eagle.loadFromFile("media/eagle.png");
-	redbrick.loadFromFile("media/redbrick.png");
-	purplestone.loadFromFile("media/purplestone.png");
-	greystone.loadFromFile("media/greystone.png");
-	bluestone.loadFromFile("media/bluestone.png");
-	mossy.loadFromFile("media/mossy.png");
-	wood.loadFromFile("media/wood.png");
-	colorstone.loadFromFile("media/colorstone.png");
-	lamp.loadFromFile("media/eLamp.png");
-
-	for (int x = 0; x < texWidth; x++)
-		for (int y = 0; y < texHeight; y++) {
-			texture[0][texWidth * y + x] = eagle.getPixel(x, y).toInteger();
-			texture[1][texWidth * y + x] = redbrick.getPixel(x, y).toInteger();
-			texture[2][texWidth * y + x] = purplestone.getPixel(x, y).toInteger();
-			texture[3][texWidth * y + x] = greystone.getPixel(x, y).toInteger();
-			texture[4][texWidth * y + x] = bluestone.getPixel(x, y).toInteger();
-			texture[5][texWidth * y + x] = mossy.getPixel(x, y).toInteger();
-			texture[6][texWidth * y + x] = wood.getPixel(x, y).toInteger();
-			texture[7][texWidth * y + x] = colorstone.getPixel(x, y).toInteger();
-			texture[8][texWidth * y + x] = lamp.getPixel(x, y).toInteger();
-		}
-
+    CTexture::initSigns();
+    CTexture::loadFiles();
 }
 
 VertexArray CCamera::draw() {
@@ -118,13 +96,11 @@ VertexArray CCamera::draw() {
 		if (drawStart < 0) drawStart = 0;
 		int drawEnd = lineHeight / 2 + screenHeight / 2;
 		if (drawEnd >= screenHeight) drawEnd = screenHeight - 1;
-		int texNum = 0;
+		char textureSign = 0;
 		
 		if (map->map[mapX][mapY]->type == BLOCK) {
-			texNum = map->map[mapX][mapY]->block.textureId;
+			textureSign = map->map[mapX][mapY]->block->texture;
 		}
-		else if (isEntity)
-			texNum = ent->textureId;
 		else
 			continue;
 		
@@ -140,10 +116,11 @@ VertexArray CCamera::draw() {
 
 		double step = 1.0 * texHeight / lineHeight;
 		double texPos = (drawStart - screenHeight / 2 + lineHeight / 2) * step;
+		vector<Uint32>* tex = CTexture::getTexture(textureSign);
 		for (int y = drawStart; y < drawEnd; y++) {
 			int texY = (int)texPos & (texHeight - 1);
 			texPos += step;
-			Uint32 color = texture[texNum][texHeight * texY + texX];
+			Uint32 color = tex->at(texHeight * texY + texX);
 			//if (side == 1) color = (color >> 1) & 8355711;
 			Vertex ver;
 			ver.position = Vector2f(x, y);
