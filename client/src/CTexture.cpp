@@ -1,9 +1,9 @@
 #include "CTexture.h"
 
 map<char, string> CTexture::signs = map<char, string>();
-map<char, vector<Uint32>*> CTexture::textures = map<char, vector<Uint32>*>();
+map<char, vector<uint32_t>*> CTexture::textures = map<char, vector<uint32_t>*>();
 
-vector<Uint32>* CTexture::getTexture(char sign) {
+vector<uint32_t>* CTexture::getTexture(char sign) {
     return textures[sign];
 }
 
@@ -30,7 +30,7 @@ void CTexture::loadFiles() {
         Image* img = new Image();
         img->loadFromFile(sign.second);
         images[sign.first] = img;
-        textures[sign.first] = new vector<Uint32>(texWidth * texHeight);
+        textures[sign.first] = new vector<uint32_t>(texWidth * texHeight);
     }
 
     for (int x = 0; x < texWidth; x++) {

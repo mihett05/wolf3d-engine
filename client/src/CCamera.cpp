@@ -113,11 +113,11 @@ VertexArray* CCamera::draw() {
 		double step = 1.0 * texHeight / lineHeight;
 		double texPos = (drawStart - screenHeight / 2 + lineHeight / 2) * step;
 
-		vector<Uint32>* texture = CTexture::getTexture(textureSign);
+		vector<uint32_t>* texture = CTexture::getTexture(textureSign);
 		for (int y = drawStart; y < drawEnd; y++) {
 			int texY = (int)texPos & (texHeight - 1);
 			texPos += step;
-			Uint32 color = texture->at(texHeight * texY + texX);
+			uint32_t color = texture->at(texHeight * texY + texX);
 			//if (side == 1) color = (color >> 1) & 8355711;
 			Vertex ver;
 			ver.position = Vector2f(x, y);

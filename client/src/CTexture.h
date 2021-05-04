@@ -14,9 +14,9 @@ using namespace sf;
 class CTexture {
 private:
     static map<char, string> signs;
-    static map<char, vector<Uint32>*> textures;
+    static map<char, vector<uint32_t>*> textures;
 public:
-    static vector<Uint32>* getTexture(char sign);
+    static vector<uint32_t>* getTexture(char sign);
     static void setSign(char sign, const string& file);
     static void initSigns();
     static void loadFiles();
