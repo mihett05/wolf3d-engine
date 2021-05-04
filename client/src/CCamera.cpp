@@ -11,6 +11,8 @@ CCamera::CCamera(Clock* clock, int width, int height, CMap* map) {
 	this->screenHeight = height;
 	this->map = map;
 
+    pixels = new VertexArray(Points, screenWidth * screenHeight);
+
 	posX = map->spawnPosition.x + 0.5;
 	posY = map->spawnPosition.y + 0.5;
 	dirX = -1.0;
@@ -22,8 +24,8 @@ CCamera::CCamera(Clock* clock, int width, int height, CMap* map) {
     CTexture::loadFiles();
 }
 
-VertexArray CCamera::draw() {
-	VertexArray pixels(Points, screenWidth * screenHeight);
+VertexArray* CCamera::draw() {
+    pixels->clear();
 	
 	for (int x = 0; x < screenWidth; x++) {
 		double cameraX = (double)(2 * x) / (double)screenWidth - 1;
@@ -120,9 +122,14 @@ VertexArray CCamera::draw() {
 			Vertex ver;
 			ver.position = Vector2f(x, y);
 			ver.color = Color(color);
-			pixels.append(ver);
+			pixels->append(ver);
 		}
 	}
+
+    for (uint32_t i = 0; i < map->entities->size(); ++i) {
+
+    }
+
 	double moveSpeed = getMoveSpeed(); //the constant value is in squares/second
 	double rotSpeed = getRotationSpeed(); //the constant value is in radians/second
 
@@ -200,11 +207,11 @@ void CCamera::moveStraight(bool isForward, double moveSpeed) {
 }
 
 double CCamera::getMoveSpeed() {
-    return clock->getElapsedTime().asSeconds() * 5.0;
+    return clock->getElapsedTime().asSeconds() * 8.0;
 }
 
 double CCamera::getRotationSpeed() {
-    return clock->getElapsedTime().asSeconds() * 3.0;
+    return clock->getElapsedTime().asSeconds() * 5.0;
 }
 
 void CCamera::drawEntity() {

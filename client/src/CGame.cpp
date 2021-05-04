@@ -1,7 +1,6 @@
 #define _USE_MATH_DEFINES
 
-#include <math.h>
-#include <iostream>
+#include <chrono>
 #include <functional>
 #include <vector>
 #include <SFML/System.hpp>
@@ -20,20 +19,11 @@ CGame::CGame(unsigned int width, unsigned int height, const string& title, unsig
 
 void CGame::draw() {
 	window->clear(Color(84, 84, 84));
-	
-	VertexArray buffer = camera->draw();
-	window->draw(buffer);
+	window->draw(*camera->draw());
 	window->display();
 }
 
 void CGame::update() {
-	/*if (Keyboard::isKeyPressed(Keyboard::A) || Keyboard::isKeyPressed(Keyboard::D)) {
-		if (Keyboard::isKeyPressed(Keyboard::A))
-			player.rotate(-1 * clock.getElapsedTime().asSeconds());
-		if (Keyboard::isKeyPressed(Keyboard::D))
-			player.rotate(1 * clock.getElapsedTime().asSeconds());
-
-	}*/
 	clock->restart();
 	draw();
 }

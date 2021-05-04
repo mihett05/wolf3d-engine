@@ -11,6 +11,7 @@ using namespace sf;
 
 class CCamera {
 private:
+    VertexArray* pixels;
 	int screenWidth{}, screenHeight{};
 	double posX{}, posY{};
 	double dirX{}, dirY{};
@@ -26,8 +27,7 @@ private:
 	bool canMove(bool isForward, CMapCell* cell, CMapCell* cellNext, float diff, double dir) const;
 	void moveStraight(bool isForward, double moveSpeed);
 public:
-	CCamera() = default;
 	CCamera(Clock* clock, int screenWidth, int screenHeight, CMap* map);
-	VertexArray draw();
+	VertexArray* draw();
 };
 
