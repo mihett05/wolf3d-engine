@@ -24,6 +24,8 @@ public:
 
 	explicit CMap(const string& fileName);
 	void tick();
+
+	CMapCell* getCellOn(int x, int y) const;
 	CEntity* getEntityOn(float x, float y) const;
 	~CMap();
 };

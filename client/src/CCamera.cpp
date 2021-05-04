@@ -46,8 +46,7 @@ VertexArray CCamera::draw() {
 		bool hit = false;
 		int side;
 
-		bool isEntity = false;
-		CEntity* ent = nullptr;
+        CMapCell* cell = nullptr;
 
 		if (rayDirX < 0) {
 			stepX = -1;
@@ -77,14 +76,11 @@ VertexArray CCamera::draw() {
 				mapY += stepY;
 				side = 1;
 			}
-			ent = map->getEntityOn(mapX, mapY);
-			if (map->map[mapX][mapY]->type != EMPTY)
+
+			cell = map->getCellOn(mapX, mapY);
+
+			if (cell != nullptr && cell->type == BLOCK)
 				hit = true;
-			else if (ent != nullptr) {
-				cout << ent->textureId << endl;
-				hit = true;
-				isEntity = true;
-			}
 		}
 
 		if (side == 0) perpWallDist = (mapX - posX + (1 - stepX) / 2) / rayDirX;
@@ -98,11 +94,9 @@ VertexArray CCamera::draw() {
 		if (drawEnd >= screenHeight) drawEnd = screenHeight - 1;
 		char textureSign = 0;
 		
-		if (map->map[mapX][mapY]->type == BLOCK) {
-			textureSign = map->map[mapX][mapY]->block->texture;
-		}
-		else
-			continue;
+		if (cell != nullptr && cell->type == BLOCK) {
+			textureSign = cell->block->getTexture();
+		} else continue;
 		
 
 		double wallX;
@@ -116,11 +110,12 @@ VertexArray CCamera::draw() {
 
 		double step = 1.0 * texHeight / lineHeight;
 		double texPos = (drawStart - screenHeight / 2 + lineHeight / 2) * step;
-		vector<Uint32>* tex = CTexture::getTexture(textureSign);
+
+		vector<Uint32>* texture = CTexture::getTexture(textureSign);
 		for (int y = drawStart; y < drawEnd; y++) {
 			int texY = (int)texPos & (texHeight - 1);
 			texPos += step;
-			Uint32 color = tex->at(texHeight * texY + texX);
+			Uint32 color = texture->at(texHeight * texY + texX);
 			//if (side == 1) color = (color >> 1) & 8355711;
 			Vertex ver;
 			ver.position = Vector2f(x, y);
@@ -128,38 +123,14 @@ VertexArray CCamera::draw() {
 			pixels.append(ver);
 		}
 	}
-	double moveSpeed = clock->getElapsedTime().asSeconds() * 5.0; //the constant value is in squares/second
-	double rotSpeed = clock->getElapsedTime().asSeconds() * 3.0; //the constant value is in radians/second
+	double moveSpeed = getMoveSpeed(); //the constant value is in squares/second
+	double rotSpeed = getRotationSpeed(); //the constant value is in radians/second
 
 	if (Keyboard::isKeyPressed(Keyboard::W)) {
-		CMapCell* cellX = map->map[int(posX + dirX * moveSpeed)][int(posY)];
-		CMapCell* cellY = map->map[int(posX)][int(posY + dirY * moveSpeed)];
-
-		CMapCell* cellNextX = map->map[int(posX + dirX * moveSpeed + (dirX >= 0 ? 1 : -1))][int(posY)];
-		CMapCell* cellNextY = map->map[int(posX)][int(posY + dirY * moveSpeed + (dirY >= 0 ? 1 : -1))];
-		float diffX = floorf(abs(int(posX + dirX * moveSpeed) - posX) * 10.0 + 0.5) / 10.0;
-		bool canMoveX = cellX->type == EMPTY && (cellNextX->type == EMPTY || (cellNextX->type == BLOCK && ((diffX >= 0.5 && dirX < 0) || ((diffX <= 0.5 || diffX > 1) && dirX >= 0))));
-		float diffY = floorf(abs(int(posY + dirY * moveSpeed) - posY) * 10.0 + 0.5) / 10.0;
-		bool canMoveY = cellY->type == EMPTY && (cellNextY->type == EMPTY || (cellNextY->type == BLOCK && ((diffY >= 0.5 && dirY < 0) || ((diffY <= 0.5 || diffY > 1) && dirY >= 0))));
-		if (canMoveX)
-			posX += dirX * moveSpeed;
-		if (canMoveY)
-			posY += dirY * moveSpeed;
+		moveStraight(true, moveSpeed);
 	}
 	if (Keyboard::isKeyPressed(Keyboard::S)) {
-		CMapCell* cellX = map->map[int(posX - dirX * moveSpeed)][int(posY)];
-		CMapCell* cellY = map->map[int(posX)][int(posY - dirY * moveSpeed)];
-
-		CMapCell* cellNextX = map->map[int(posX + dirX * moveSpeed + (dirX >= 0 ? -1 : 1))][int(posY)];
-		CMapCell* cellNextY = map->map[int(posX)][int(posY + dirY * moveSpeed + (dirY >= 0 ? -1 : 1))];
-		float diffX = floorf(abs(int(posX + dirX * moveSpeed) - posX) * 10.0 + 0.5) / 10.0;
-		bool canMoveX = cellX->type == EMPTY && (cellNextX->type == EMPTY || (cellNextX->type == BLOCK && ((diffX >= 0.5 && dirX >= 0) || ((diffX <= 0.5 || diffX > 1) && dirX < 0))));
-		float diffY = floorf(abs(int(posY + dirY * moveSpeed) - posY) * 10.0 + 0.5) / 10.0;
-		bool canMoveY = cellY->type == EMPTY && (cellNextY->type == EMPTY || (cellNextY->type == BLOCK && ((diffY >= 0.5 && dirY >= 0) || ((diffY <= 0.5 || diffY > 1) && dirY < 0))));
-		if (canMoveX && canMoveY) {
-            posX -= dirX * moveSpeed;
-            posY -= dirY * moveSpeed;
-		}
+        moveStraight(false, moveSpeed);
 	}
 	if (Keyboard::isKeyPressed(Keyboard::D)) {
 		double oldDirX = dirX;
@@ -179,3 +150,65 @@ VertexArray CCamera::draw() {
 	}
 	return pixels;
 }
+
+bool CCamera::canMove(bool isForward, CMapCell* cell, CMapCell* cellNext, float diff, double dir) const {
+    bool okDistance = diff <= 0.5 || diff > 1;
+    bool okDir = isForward ? dir < 0 : dir >= 0;
+    bool okBlockDistance = (diff >= 0.5 && okDir) || (okDistance && (isForward ? dir >= 0 : dir < 0));
+    bool canMove = cell->type == EMPTY && (cellNext->type == EMPTY || (cellNext->type == BLOCK && okBlockDistance));
+    return canMove;
+}
+
+void CCamera::moveStraight(bool isForward, double moveSpeed) {
+    double x = posX + ((isForward? 1 : -1) * dirX * moveSpeed);
+    double y = posY + ((isForward? 1 : -1) * dirY * moveSpeed);
+    CMapCell* cellX = map->getCellOn(int(x), int(posY));
+    CMapCell* cellY = map->getCellOn(int(posX), int(y));
+
+    if (cellX && cellY) {
+        double nextX = posX + dirX * moveSpeed;
+        double nextY = posY + dirY * moveSpeed;
+        if (isForward) {
+            nextX += dirX >= 0 ? 1 : -1;
+            nextY += dirY >= 0 ? 1 : -1;
+        } else {
+            nextX += dirX >= 0 ? -1 : 1;
+            nextY += dirY >= 0 ? -1 : 1;
+        }
+
+        CMapCell* cellNextX = map->getCellOn(int(nextX), int(posY));
+        CMapCell* cellNextY = map->getCellOn(int(posX), int(nextY));
+
+        if (cellNextX && cellNextY) {
+            float diffX = floorf(abs(int(posX + dirX * moveSpeed) - posX) * 10.0 + 0.5) / 10.0;
+            bool canMoveX = canMove(isForward, cellX, cellNextX, diffX, dirX);
+
+            float diffY = floorf(abs(int(posY + dirY * moveSpeed) - posY) * 10.0 + 0.5) / 10.0;
+            bool canMoveY = canMove(isForward, cellY, cellNextY, diffY, dirY);
+
+            if (isForward) {
+                if (canMoveX) posX += dirX * moveSpeed;
+                if (canMoveY) posY += dirY * moveSpeed;
+            } else {
+                if (canMoveX && canMoveY) {
+                    posX -= dirX * moveSpeed;
+                    posY -= dirY * moveSpeed;
+                }
+            }
+        }
+    }
+}
+
+double CCamera::getMoveSpeed() {
+    return clock->getElapsedTime().asSeconds() * 5.0;
+}
+
+double CCamera::getRotationSpeed() {
+    return clock->getElapsedTime().asSeconds() * 3.0;
+}
+
+void CCamera::drawEntity() {
+
+}
+
+

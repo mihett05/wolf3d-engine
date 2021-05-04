@@ -12,11 +12,13 @@ using namespace std;
 class CMapCell {
 public:
 	int type;
-	CEntity* entity;
 	CBlock* block;
+
 	CMapCell();
 	explicit CMapCell(CEntity* ent);
 	explicit CMapCell(CBlock* block);
+
+	static CMapCell* emptyCell;
 	static CMapCell* getByChar(char c);
 };
 

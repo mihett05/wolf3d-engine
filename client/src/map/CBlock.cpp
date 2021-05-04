@@ -20,3 +20,7 @@ CBlock* CBlock::getBlockBySign(char sign) {
     }
     return objects[sign];
 }
+
+char CBlock::getTexture() {
+    return texture;
+}

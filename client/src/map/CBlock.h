@@ -11,12 +11,14 @@ using namespace std;
 
 class CBlock {
 private:
+    char texture;
+
     static char blocks[];
     static map<char, CBlock*> objects;
 public:
-    char texture;
     CBlock() = default;
 	CBlock(char sign);
+	char getTexture();
 
     static CBlock* getBlockBySign(char sign);
 	static bool isBlock(char sign);

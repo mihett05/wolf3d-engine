@@ -15,8 +15,16 @@ private:
 	double posX{}, posY{};
 	double dirX{}, dirY{};
 	double planeX{}, planeY{};
+
 	CMap* map{};
 	Clock* clock{};
+
+	void drawEntity();
+
+	double getMoveSpeed();
+	double getRotationSpeed();
+	bool canMove(bool isForward, CMapCell* cell, CMapCell* cellNext, float diff, double dir) const;
+	void moveStraight(bool isForward, double moveSpeed);
 public:
 	CCamera() = default;
 	CCamera(Clock* clock, int screenWidth, int screenHeight, CMap* map);
