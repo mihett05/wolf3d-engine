@@ -1,24 +1,27 @@
 #pragma once
 #include <cmath>
 #include <vector>
-#include <SFML/Graphics.hpp>
+
+#include "CClock.h"
+#include "CFrameBuffer.h"
+
 #include "./map/CMap.h"
 #include "./map/CMapCell.h"
 
 using namespace std;
-using namespace sf;
+
 
 
 class CCamera {
 private:
-    VertexArray* pixels;
+    CFrameBuffer* buffer;
 	int screenWidth{}, screenHeight{};
 	double posX{}, posY{};
 	double dirX{}, dirY{};
 	double planeX{}, planeY{};
 
-	CMap* map{};
-	Clock* clock{};
+	CMap* map;
+	CClock* clock;
 
 	void drawEntity();
 
@@ -27,7 +30,8 @@ private:
 	bool canMove(bool isForward, CMapCell* cell, CMapCell* cellNext, float diff, double dir) const;
 	void moveStraight(bool isForward, double moveSpeed);
 public:
-	CCamera(Clock* clock, int screenWidth, int screenHeight, CMap* map);
-	VertexArray* draw();
+	CCamera(CClock* clock, int screenWidth, int screenHeight, CMap* map);
+	~CCamera();
+	CFrameBuffer* draw();
 };
 

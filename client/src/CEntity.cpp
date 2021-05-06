@@ -22,6 +22,7 @@ void CEntity::setPos(Vector2f pos) {
 }
 
 bool CEntity::isEntity(char c) {
+
     return find(entities, entities + sizeof(entities), c) != entities + sizeof(entities);
 }
 

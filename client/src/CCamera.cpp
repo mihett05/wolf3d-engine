@@ -5,13 +5,13 @@
 #define texWidth 64
 #define texHeight 64
 
-CCamera::CCamera(Clock* clock, int width, int height, CMap* map) {
+CCamera::CCamera(CClock* clock, int width, int height, CMap* map) {
 	this->clock = clock;
-	this->screenWidth = width;
-	this->screenHeight = height;
+	screenWidth = width;
+	screenHeight = height;
 	this->map = map;
 
-    pixels = new VertexArray(Points, screenWidth * screenHeight);
+	buffer = new CFrameBuffer(screenWidth, screenHeight);
 
 	posX = map->spawnPosition.x + 0.5;
 	posY = map->spawnPosition.y + 0.5;
@@ -24,8 +24,12 @@ CCamera::CCamera(Clock* clock, int width, int height, CMap* map) {
     CTexture::loadFiles();
 }
 
-VertexArray* CCamera::draw() {
-    pixels->clear();
+CCamera::~CCamera() {
+    delete buffer;
+}
+
+CFrameBuffer* CCamera::draw() {
+    buffer->clear(CFrameBuffer::rgbToArgb(84, 84, 84, 255));
 	
 	for (int x = 0; x < screenWidth; x++) {
 		double cameraX = (double)(2 * x) / (double)screenWidth - 1;
@@ -118,11 +122,7 @@ VertexArray* CCamera::draw() {
 			int texY = (int)texPos & (texHeight - 1);
 			texPos += step;
 			uint32_t color = texture->at(texHeight * texY + texX);
-			//if (side == 1) color = (color >> 1) & 8355711;
-			Vertex ver;
-			ver.position = Vector2f(x, y);
-			ver.color = Color(color);
-			pixels->append(ver);
+			buffer->setPixel(Vector2u(x, y), color);
 		}
 	}
 
@@ -133,13 +133,14 @@ VertexArray* CCamera::draw() {
 	double moveSpeed = getMoveSpeed(); //the constant value is in squares/second
 	double rotSpeed = getRotationSpeed(); //the constant value is in radians/second
 
-	if (Keyboard::isKeyPressed(Keyboard::W)) {
+	const uint8_t* keyState = SDL_GetKeyboardState(NULL);
+	if (keyState[SDL_SCANCODE_W]) {
 		moveStraight(true, moveSpeed);
 	}
-	if (Keyboard::isKeyPressed(Keyboard::S)) {
+	if (keyState[SDL_SCANCODE_S]) {
         moveStraight(false, moveSpeed);
 	}
-	if (Keyboard::isKeyPressed(Keyboard::D)) {
+	if (keyState[SDL_SCANCODE_D]) {
 		double oldDirX = dirX;
 		dirX = dirX * cos(-rotSpeed) - dirY * sin(-rotSpeed);
 		dirY = oldDirX * sin(-rotSpeed) + dirY * cos(-rotSpeed);
@@ -147,7 +148,7 @@ VertexArray* CCamera::draw() {
 		planeX = planeX * cos(-rotSpeed) - planeY * sin(-rotSpeed);
 		planeY = oldPlaneX * sin(-rotSpeed) + planeY * cos(-rotSpeed);
 	}
-	if (Keyboard::isKeyPressed(Keyboard::A)) {
+	if (keyState[SDL_SCANCODE_A]) {
 		double oldDirX = dirX;
 		dirX = dirX * cos(rotSpeed) - dirY * sin(rotSpeed);
 		dirY = oldDirX * sin(rotSpeed) + dirY * cos(rotSpeed);
@@ -155,7 +156,7 @@ VertexArray* CCamera::draw() {
 		planeX = planeX * cos(rotSpeed) - planeY * sin(rotSpeed);
 		planeY = oldPlaneX * sin(rotSpeed) + planeY * cos(rotSpeed);
 	}
-	return pixels;
+	return buffer;
 }
 
 bool CCamera::canMove(bool isForward, CMapCell* cell, CMapCell* cellNext, float diff, double dir) const {
@@ -207,15 +208,17 @@ void CCamera::moveStraight(bool isForward, double moveSpeed) {
 }
 
 double CCamera::getMoveSpeed() {
-    return clock->getElapsedTime().asSeconds() * 8.0;
+    return clock->getSeconds() * 8.0;
 }
 
 double CCamera::getRotationSpeed() {
-    return clock->getElapsedTime().asSeconds() * 5.0;
+    return clock->getSeconds() * 5.0;
 }
 
 void CCamera::drawEntity() {
 
 }
+
+
 
 

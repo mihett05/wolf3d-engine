@@ -1,12 +1,12 @@
 #ifndef WOLF3D_CENTITY_H
 #define WOLF3D_CENTITY_H
 
-#include <SFML/Graphics.hpp>
+#include <algorithm>
 
+#include "Vector.h"
 #include "CTexture.h"
 
 using namespace std;
-using namespace sf;
 
 struct SEntityType {
     char texture;

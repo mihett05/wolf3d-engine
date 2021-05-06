@@ -1,7 +1,9 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <SFML/Graphics.hpp>
+#include <SDL2/SDL.h>
+
+#include "CClock.h"
 #include "CEntity.h"
 #include "CCamera.h"
 #include "./map/CMap.h"
@@ -9,19 +11,23 @@
 #define mapWidth 24
 #define mapHeight 24
 
-using namespace sf;
 using namespace std;
 
 class CGame {
 protected:
-	unique_ptr<RenderWindow> window;
-	Event event;
-	Clock* clock;
+	SDL_Window* window;
+	SDL_Renderer* renderer;
+	SDL_Event event;
+
+	SDL_Texture* bufferTexture;
+
+	int w, h;
+	CClock* clock;
 	CCamera* camera;
 	CMap* map;
 	
 public:
-	CGame(unsigned int width, unsigned int height, const string& title, unsigned int frameLimit);
+	CGame(int width, int height, const string& title, unsigned int frameLimit);
 	void draw();
 	void update();
 	void loop();

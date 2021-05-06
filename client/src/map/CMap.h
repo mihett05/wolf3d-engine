@@ -2,8 +2,8 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <SFML/Graphics.hpp>
 
+#include "../Vector.h"
 #include "CMapCell.h"
 #include "../CEntity.h"
 
@@ -11,7 +11,7 @@ const size_t MAP_WIDTH = 32;
 const size_t MAP_HEIGHT = 32;
 
 using namespace std;
-using namespace sf;
+
 
 
 class CMap {

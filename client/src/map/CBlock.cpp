@@ -21,6 +21,6 @@ CBlock* CBlock::getBlockBySign(char sign) {
     return objects[sign];
 }
 
-char CBlock::getTexture() {
+char CBlock::getTexture() const {
     return texture;
 }

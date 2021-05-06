@@ -1,26 +1,31 @@
 #define _USE_MATH_DEFINES
 
-#include <chrono>
 #include <functional>
 #include <vector>
-#include <SFML/System.hpp>
 
 #include "CGame.h"
 
-CGame::CGame(unsigned int width, unsigned int height, const string& title, unsigned int frameLimit) {
-	window = make_unique<RenderWindow>(VideoMode(width, height), title);
-	window->setFramerateLimit(frameLimit);
+CGame::CGame(int width, int height, const string& title, unsigned int frameLimit) {
+	window = SDL_CreateWindow(title.c_str(), 100, 100, width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_INPUT_FOCUS);
 	map = new CMap("maps/level_1.txt");
-	clock = new Clock();
-	
-	camera = new CCamera(clock, window->getSize().x, window->getSize().y, map);
+	clock = new CClock();
+
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
+	SDL_GetWindowSize(window, &w, &h);
+	camera = new CCamera(clock, w, h, map);
+    bufferTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STREAMING, w, h);
 }
 
 
 void CGame::draw() {
-	window->clear(Color(84, 84, 84));
-	window->draw(*camera->draw());
-	window->display();
+    CFrameBuffer* buffer = camera->draw();
+    SDL_UpdateTexture(bufferTexture, NULL, buffer->getData(), buffer->w * 4);
+
+    SDL_SetRenderDrawColor(renderer, 84, 84, 84, 0xFF);
+    SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, bufferTexture, NULL, NULL);
+	SDL_RenderPresent(renderer);
 }
 
 void CGame::update() {
@@ -29,16 +34,23 @@ void CGame::update() {
 }
 
 void CGame::loop() {
-	while (window->isOpen()) {
-		while (window->pollEvent(this->event)) {
-			if (event.type == sf::Event::Closed || event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
-				window->close();
-		}
-		update();
-	}
-
+    bool quit = false;
+    while (!quit) {
+        while (SDL_PollEvent(&event) != 0) {
+            if (event.type == SDL_QUIT || event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
+                quit = true;
+            }
+        }
+        update();
+    }
+    destroy();
 }
 
 void CGame::destroy() {
-
+    delete camera;
+    delete clock;
+    delete map;
+    SDL_DestroyTexture(bufferTexture);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
 }
