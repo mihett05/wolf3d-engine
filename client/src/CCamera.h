@@ -15,23 +15,21 @@ using namespace std;
 class CCamera {
 private:
     CFrameBuffer* buffer;
-	int screenWidth{}, screenHeight{};
-	double posX{}, posY{};
-	double dirX{}, dirY{};
-	double planeX{}, planeY{};
+    double posX, posY;
+    double dirX, dirY;
+    double planeX, planeY;
 
-	CMap* map;
-	CClock* clock;
+    CMap* map;
+    CClock* clock;
 
-	void drawEntity();
+    void drawEntity();
 
-	double getMoveSpeed();
-	double getRotationSpeed();
-	bool canMove(bool isForward, CMapCell* cell, CMapCell* cellNext, float diff, double dir) const;
-	void moveStraight(bool isForward, double moveSpeed);
+    double getMoveSpeed();
+    double getRotationSpeed();
+    bool canMove(bool isForward, CMapCell* cell, CMapCell* cellNext, float diff, double dir) const;
+    void moveStraight(bool isForward, double moveSpeed);
 public:
-	CCamera(CClock* clock, int screenWidth, int screenHeight, CMap* map);
-	~CCamera();
-	CFrameBuffer* draw();
+    CCamera(CFrameBuffer* buffer, CClock* clock, CMap* map);
+    ~CCamera();
+    CFrameBuffer* draw();
 };
-

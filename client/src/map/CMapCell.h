@@ -15,7 +15,6 @@ public:
 	CBlock* block;
 
 	CMapCell();
-	explicit CMapCell(CEntity* ent);
 	explicit CMapCell(CBlock* block);
 
 	static CMapCell* emptyCell;

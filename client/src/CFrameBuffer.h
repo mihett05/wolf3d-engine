@@ -22,7 +22,7 @@ public:
     void setPixel(Vector2u pos, uint32_t color);
     void drawRect(Vector2u start, Vector2u size, uint32_t color);
 
-    static uint32_t rgbToArgb(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+    static uint32_t rgbToArgb(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255);
 };
 
 

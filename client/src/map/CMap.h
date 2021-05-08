@@ -17,9 +17,12 @@ using namespace std;
 class CMap {
 private:
 	string fileName;
+	CMapCell* createCell(char sign, int x, int y);
 public:
+    size_t sizeW, sizeH;
+    size_t w, h;
 	Vector2f spawnPosition;
-	CMapCell*** map;
+	CMapCell** map;
 	vector<CEntity*>* entities;
 
 	explicit CMap(const string& fileName);

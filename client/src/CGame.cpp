@@ -13,13 +13,14 @@ CGame::CGame(int width, int height, const string& title, unsigned int frameLimit
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
 	SDL_GetWindowSize(window, &w, &h);
-	camera = new CCamera(clock, w, h, map);
+	buffer = new CFrameBuffer(width, height);
+	camera = new CCamera(buffer, clock, map);
     bufferTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STREAMING, w, h);
 }
 
 
 void CGame::draw() {
-    CFrameBuffer* buffer = camera->draw();
+    camera->draw();
     SDL_UpdateTexture(bufferTexture, NULL, buffer->getData(), buffer->w * 4);
 
     SDL_SetRenderDrawColor(renderer, 84, 84, 84, 0xFF);
@@ -47,7 +48,7 @@ void CGame::loop() {
 }
 
 void CGame::destroy() {
-    delete camera;
+    delete buffer;
     delete clock;
     delete map;
     SDL_DestroyTexture(bufferTexture);

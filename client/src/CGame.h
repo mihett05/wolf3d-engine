@@ -22,8 +22,10 @@ protected:
 	SDL_Texture* bufferTexture;
 
 	int w, h;
-	CClock* clock;
-	CCamera* camera;
+	CFrameBuffer* buffer;
+    CCamera* camera;
+
+    CClock* clock;
 	CMap* map;
 	
 public:
